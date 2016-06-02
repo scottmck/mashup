@@ -23,7 +23,7 @@
             
         }
         //file is there and it's readable
-        else
+        else 
         {
             $row = 1;
             if(($us_txt_open = fopen($us_txt_location, 'r')) !== FALSE)
