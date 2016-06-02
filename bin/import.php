@@ -3,37 +3,20 @@
 
     require("../includes/config.php");
 
-    // TODO
     $us_txt_location = $argv[1];
     
     
-    if (file_exists($us_txt_location) === FALSE)
+    if(file_exists($us_txt_location) !== FALSE)
     {
-        //return error of some sort
-        print("error0");
-        return;
-    }
-    else
-    {
-        if(is_readable($us_txt_location) === FALSE)
-        {
-            //return error
-            print("error1");
-            return;
-            
-        }
-        //file is there and it's readable
-        else 
+        if(is_readable($us_txt_location) !== FALSE)
         {
             $row = 1;
             if(($us_txt_open = fopen($us_txt_location, 'r')) !== FALSE)
             {
-                
                 while(($data = fgetcsv($us_txt_open, 1000, "\t")) !== FALSE)
                 {
                     $num = count($data);
                     //put mySQL insert here
-                    
                     $row++;
                     CS50::query("INSERT IGNORE INTO places (country_code, postal_code, place_name, admin_name1, admin_code1, admin_name2,
                     admin_code2, admin_name3, admin_code3, latitude, longitude, accuracy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
@@ -42,10 +25,9 @@
                 fclose ($us_txt_open);
                 return;
             }
-           
-           
+            return -1;
         }
-    }   
-
-
+        return -1;
+    }
+    return -1;
 ?>
