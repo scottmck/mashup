@@ -8,15 +8,19 @@
  *
  * Global JavaScript.
  */
- 
+ //Global harvard position
+var Harvard = {lat: 42.3770, lng: -71.1256}; 
 // Google Map
 var map;
 
 // markers for map
 var markers = [];
+//new camp marker array
+var Camp_markers =[];
 
 // info window
 var info = new google.maps.InfoWindow();
+
 
 // execute when the DOM is fully loaded
 $(function() {
@@ -41,43 +45,93 @@ $(function() {
             stylers: [
                 {visibility: "off"}
             ]
-        }
+        },
+        //add features
+        
+
+        
 
     ];
-
+    
+   
     // options for map
     // https://developers.google.com/maps/documentation/javascript/reference#MapOptions
     var options = {
-        center: {lat: 42.3770, lng: -71.1256}, // Stanford, California
+        center: Harvard, // Cambridge, boston
         disableDefaultUI: true,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-        maxZoom: 14,
+        maxZoom: 18,
         panControl: true,
         styles: styles,
         zoom: 13,
         zoomControl: true
+        //map.setTilt(45);
     };
-
+    
     // get DOM node in which map will be instantiated
     var canvas = $("#map-canvas").get(0);
 
     // instantiate map
     map = new google.maps.Map(canvas, options);
+    
+    //try out
+    ///google.charts.load('current', {'packages':['geochart']});
+     //     google.charts.setOnLoadCallback(drawVisualization);
 
     // configure UI once Google Map is idle (i.e., loaded)
     google.maps.event.addListenerOnce(map, "idle", configure);
 
+    var centerControlDiv = document.createElement('div');
+    var centerControl = new CenterControl(centerControlDiv, map);
+
+        centerControlDiv.index = 1;
+        map.controls[google.maps.ControlPosition.TOP_CENTER].push(centerControlDiv);
+      
 });
+
 
 /**
  * Adds marker for place to map.
  */
+ function CenterControl(controlDiv, map) {
+
+        // Set CSS for the control border.
+        var controlUI = document.createElement('div');
+        controlUI.style.backgroundColor = '#fff';
+        controlUI.style.border = '2px solid #fff';
+        controlUI.style.borderRadius = '3px';
+        controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+        controlUI.style.cursor = 'pointer';
+        controlUI.style.marginBottom = '22px';
+        controlUI.style.textAlign = 'center';
+        controlUI.title = 'Find Harvard';
+        controlDiv.appendChild(controlUI);
+
+        // Set CSS for the control interior.
+        var controlText = document.createElement('div');
+        controlText.style.color = 'rgb(25,25,25)';
+        controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+        controlText.style.fontSize = '16px';
+        controlText.style.lineHeight = '38px';
+        controlText.style.paddingLeft = '5px';
+        controlText.style.paddingRight = '5px';
+        controlText.innerHTML = 'Find Harvard';
+        controlUI.appendChild(controlText);
+
+        // Setup the click event listeners: simply set the map to Chicago.
+        controlUI.addEventListener('click', function() {
+          map.setCenter(Harvard);
+        });
+
+      }
+ 
 function addMarker(place)
 {
     
     //set news icon and lat/long variable
     var image = 'http://maps.google.com/mapfiles/kml/pal2/icon31.png';
     var myLatLng = new google.maps.LatLng(place.latitude, place.longitude);
+    
    
 
     var marker = new MarkerWithLabel({
@@ -130,6 +184,7 @@ function addMarker(place)
     
     });
 }
+
 
 /**
  * Configures application.
@@ -308,4 +363,6 @@ function update()
          // log error to browser's console
          console.log(errorThrown.toString());
      });
+
+    
 }
