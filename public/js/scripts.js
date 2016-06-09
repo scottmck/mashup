@@ -14,9 +14,12 @@ var map;
 
 // markers for map
 var markers = [];
+//new camp marker array
+var Camp_markers =[];
 
 // info window
 var info = new google.maps.InfoWindow();
+
 
 // execute when the DOM is fully loaded
 $(function() {
@@ -41,7 +44,11 @@ $(function() {
             stylers: [
                 {visibility: "off"}
             ]
-        }
+        },
+        //add features
+        
+
+        
 
     ];
 
@@ -51,23 +58,30 @@ $(function() {
         center: {lat: 42.3770, lng: -71.1256}, // Stanford, California
         disableDefaultUI: true,
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-        maxZoom: 14,
+        maxZoom: 18,
         panControl: true,
         styles: styles,
         zoom: 13,
         zoomControl: true
+        //map.setTilt(45);
     };
-
+    
     // get DOM node in which map will be instantiated
     var canvas = $("#map-canvas").get(0);
 
     // instantiate map
     map = new google.maps.Map(canvas, options);
+    
+    //try out
+    ///google.charts.load('current', {'packages':['geochart']});
+     //     google.charts.setOnLoadCallback(drawVisualization);
 
     // configure UI once Google Map is idle (i.e., loaded)
     google.maps.event.addListenerOnce(map, "idle", configure);
 
+
 });
+
 
 /**
  * Adds marker for place to map.
@@ -78,6 +92,7 @@ function addMarker(place)
     //set news icon and lat/long variable
     var image = 'http://maps.google.com/mapfiles/kml/pal2/icon31.png';
     var myLatLng = new google.maps.LatLng(place.latitude, place.longitude);
+    
    
 
     var marker = new MarkerWithLabel({
@@ -129,6 +144,23 @@ function addMarker(place)
         });
     
     });
+}
+
+function add_camp(place)
+{
+    var camp_loc = new google.maps.LatLng(camping.latitude, camping.longitude);
+    
+    
+    var c_marker = new MarkerWithLabel({
+        position: camp_loc,
+        map: map,
+        icon: iconBase + 'schools_maps.png',
+        labelClass: "label",
+        labelContent:camping.name
+        
+        
+    });
+    Camp_markers.push(c_marker);
 }
 
 /**
@@ -308,4 +340,23 @@ function update()
          // log error to browser's console
          console.log(errorThrown.toString());
      });
+     
+      $.getJSON("update2.php", parameters)
+    .done(function(data, textStatus, jqXHR) {
+
+        // remove old markers from map
+        //removeMarkers();
+
+        // add new markers to map
+        for (var i = 0; i < data.length; i++)
+        {
+            add_camp(data[i]);
+        }
+     })
+     .fail(function(jqXHR, textStatus, errorThrown) {
+
+         // log error to browser's console
+         console.log(errorThrown.toString());
+     });
+
 }
